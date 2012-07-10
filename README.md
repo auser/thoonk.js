@@ -10,7 +10,7 @@ interoperable with other versions of Thoonk (currently Thoonk.py for Python).
 
 The core of Thoonk is the feed. A feed is a subject that you can publish items
 to (string, binary, json, xml, whatever), each with a unique id (assigned or
-generated). Other apps and services may subscribe to your feeds and recieve
+generated). Other apps and services may subscribe to your feeds and receive
 new/update/retract notices on your feeds. Each feed persists published items
 that can later be queried. Feeds may also be configured for various behaviors,
 such as max number of items, default serializer, friendly title, etc.
@@ -46,6 +46,11 @@ not deleted until they are finished.
 
 Jobs are useful for distributing load, ensuring a task is completed regardless
 of outages, and keeping long running tasks away from synchronous interfaces.
+
+## Hash ##
+
+The hash is a serialized object that sits inside of redis. This is stored with
+a unique key.
 
 # Installation #
 

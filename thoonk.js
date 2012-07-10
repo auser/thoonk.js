@@ -4,16 +4,34 @@ var redis = require('redis'),
     EventEmitter = require("events").EventEmitter,
     uuid = require('node-uuid');
 
+ /*
+  *
+  * Thonk
+  *
+  * Usage:
+  * var Thoonk = require("thoonk").Thoonk;
+  * var thoonk = new Thoonk(host, port, db)
+  * var thoonk = require("thoonk").createClient(host, port, db);
+  * var redis  = require('redis').createClient();
+  * var thoonk = require('thoonk').useClient(redis);
+  */
+
 var Thoonk = function(host, port) {
     EventEmitter.call(this);
 
-
-    this.host = host || 'localhost';
-    this.port = port || 6379;
-    this.redis = redis.createClient(this.port, this.host);
-    this.lredis = redis.createClient(this.port, this.host);
-    this.ready = false;
-
+    if ('object' == typeof(host)) {
+        // The options were an object in the form of
+        // {client: client} rather than host, port
+        this.redis = host;
+        this.lredis = host;
+    } else {
+        this.host = host || 'localhost';
+        this.port = port || 6379;
+        this.redis = redis.createClient(this.port, this.host);
+        this.lredis = redis.createClient(this.port, this.host);
+        this.ready = false;
+    };
+    
     this.lredis.on('message', function(channel, msg) {
         msg = msg.toString();
         this.emit(channel, channel, msg);
@@ -23,6 +41,7 @@ var Thoonk = function(host, port) {
         this.emit('subscribed.' + channel);
     }.bind(this));
 
+    
     this.scripts = {};
     this.shas = {};
 
@@ -262,5 +281,10 @@ exports.ThoonkBaseObject = ThoonkBaseObject;
 exports.ThoonkBaseInterface = ThoonkBaseInterface;
 
 exports.createClient = function(host, port) {
+    console.log("createClient");
     return new Thoonk(host, port);
+};
+
+exports.useClient = function(client) {
+    return new Thoonk({client: client});
 };
