@@ -2,10 +2,12 @@
 local name = ARGV[1];
 local id = ARGV[2];
 local config = cjson.decode(ARGV[3]);
+ -- hashes.User:<id>
+local hash_name = "hashes."..name..":"..id;
 
-if redis.call('SADD', 'hashes', name) ~= 0 then
+if redis.call('SADD', hash_name, name) ~= 0 then
     for key, value in pairs(config) do
-        redis.call('HSET', '.items'name..':'..id, key, value);
+        redis.call('HSET', hash_name, key, value);
     end
     return {false};
 end

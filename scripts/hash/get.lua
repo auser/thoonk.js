@@ -1,2 +1,2 @@
-local result = redis.call('HGET', ARGV[1]..':'..ARGV[2], ARGV[3]);
+local result = redis.call('HGET', "hashes.items");
 return {false, result};
